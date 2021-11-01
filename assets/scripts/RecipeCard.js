@@ -1,7 +1,8 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
-
+    super();
+    const shadowR = this.attachShadow({mode: 'open'})
     // You'll want to attach the shadow DOM here
   }
 
@@ -100,6 +101,92 @@ class RecipeCard extends HTMLElement {
     // created in the constructor()
 
     // Part 1 Expose - TODO
+    const imag = document.createElement('img')
+    imag.src = searchForKey(data, "thumbnailUrl")
+    imag.alt = searchForKey(data, "tag")
+    card.appendChild(imag)
+
+    const titleP = document.createElement('p')
+    titleP.class = "title"
+    titleP.classList.add("title")
+    let aEl = document.createElement('a')
+    aEl.href = getUrl(data)
+    aEl.innerHTML = searchForKey(data, "headline")
+    titleP.appendChild(aEl)
+    card.appendChild(titleP)
+
+    const orgP = document.createElement('p')
+    orgP.class = "organization"
+    orgP.classList = "organization"
+    orgP.innerHTML = getOrganization(data)
+    card.appendChild(orgP)
+
+    const ratingDiv = document.createElement('div')
+    ratingDiv.class = "rating"
+    ratingDiv.classList = "rating"
+
+    let rate = searchForKey(data, 'ratingValue')
+    if (rate == undefined){
+      let rateSpan = document.createElement('span')
+      rateSpan.innerHTML = "No Reviews"
+      ratingDiv.appendChild(rateSpan)
+    }
+    else{
+      let rateSpan = document.createElement('span')
+      rateSpan.innerHTML = searchForKey(data, "ratingValue")
+      let imgRate = document.createElement('img')
+      let rateSpanIn = document.createElement('span')
+      if(rate>=4.90){
+        imgRate.src = "assets/images/icons/5-star.svg"
+        imgRate.alt = "5 star"
+        rateSpanIn.innerHTML = "(" + searchForKey(data, 'ratingCount') + ")"
+        
+      }
+      else if(rate >=3.90 && rate<4.90){
+        imgRate.src = "assets/images/icons/4-star.svg"
+        imgRate.alt = "4 star"
+        rateSpanIn.innerHTML = "(" + searchForKey(data, 'ratingCount') + ")"
+      }
+      else if(rate >=2.90 && rate<3.90){
+        imgRate.src = "assets/images/icons/3-star.svg"
+        imgRate.alt = "3 star"
+        rateSpanIn.innerHTML = "(" + searchForKey(data, 'ratingCount') + ")"
+      }
+      else if(rate >=1.90 && rate<2.90){
+        imgRate.src = "assets/images/icons/2-star.svg"
+        imgRate.alt = "2 star"
+        rateSpanIn.innerHTML = "(" + searchForKey(data, 'ratingCount') + ")"
+      }
+      else if(rate >=0.90 && rate<1.90){
+        imgRate.src = "assets/images/icons/1-star.svg"
+        imgRate.alt = "1 star"
+        rateSpanIn.innerHTML = "(" + searchForKey(data, 'ratingCount') + ")"
+      }
+      else{
+        imgRate.src = "assets/images/icons/0-star.svg"
+        imgRate.alt = "0 star"
+        rateSpanIn.innerHTML = "(" + searchForKey(data, 'ratingCount') + ")"
+      }
+      
+      ratingDiv.appendChild(rateSpan)
+      ratingDiv.appendChild(imgRate)
+      ratingDiv.appendChild(rateSpanIn)
+    }
+    card.appendChild(ratingDiv)
+
+    const cTime = document.createElement('p')
+    const tTime = searchForKey(data, "totalTime")
+    cTime.innerHTML = convertTime(tTime)
+    card.appendChild(cTime)
+
+    const ingre = document.createElement('p')
+    ingre.setAttribute("class", "ingredients")
+
+    ingre.innerHTML = createIngredientList(searchForKey(data, 'recipeIngredient'))
+    card.appendChild(ingre)
+
+    this.shadowRoot.appendChild(styleElem)
+    this.shadowRoot.appendChild(card)
   }
 }
 
